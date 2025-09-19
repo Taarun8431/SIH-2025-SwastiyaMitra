@@ -1,0 +1,541 @@
+{
+	"info": {
+		"_postman_id": "sih-backend-collection",
+		"name": "SIH Backend - Migrant Health System",
+		"description": "Complete API collection for testing SIH Backend endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": ["{{base_url}}"],
+					"path": ["health"]
+				}
+			}
+		},
+		{
+			"name": "Root Endpoint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/",
+					"host": ["{{base_url}}"],
+					"path": [""]
+				}
+			}
+		},
+		{
+			"name": "Login - Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    pm.collectionVariables.set('access_token', response.access_token);",
+							"    console.log('Token saved:', response.access_token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": ["{{base_url}}"],
+					"path": ["auth", "login"]
+				}
+			}
+		},
+		{
+			"name": "Login - Doctor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    pm.collectionVariables.set('access_token', response.access_token);",
+							"    console.log('Token saved:', response.access_token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "doctor1",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "doctor123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": ["{{base_url}}"],
+					"path": ["auth", "login"]
+				}
+			}
+		},
+		{
+			"name": "Get Current User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/auth/me",
+					"host": ["{{base_url}}"],
+					"path": ["auth", "me"]
+				}
+			}
+		},
+		{
+			"name": "Register Migrant",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"gender\": \"Male\",\n  \"contact\": \"+91-9876543210\",\n  \"district_in_kerala\": \"Ernakulam\",\n  \"occupation\": \"Construction Worker\",\n  \"location_lat\": 9.9312,\n  \"location_lng\": 76.2673\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/migrant/register",
+					"host": ["{{base_url}}"],
+					"path": ["migrant", "register"]
+				}
+			}
+		},
+		{
+			"name": "Get Migrant by ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/migrant/1",
+					"host": ["{{base_url}}"],
+					"path": ["migrant", "1"]
+				}
+			}
+		},
+		{
+			"name": "Update Migrant",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe Updated\",\n  \"gender\": \"Male\",\n  \"contact\": \"+91-9876543210\",\n  \"district_in_kerala\": \"Kochi\",\n  \"occupation\": \"Senior Construction Worker\",\n  \"location_lat\": 9.9312,\n  \"location_lng\": 76.2673\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/migrant/1",
+					"host": ["{{base_url}}"],
+					"path": ["migrant", "1"]
+				}
+			}
+		},
+		{
+			"name": "Add Medical Encounter",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"migrant_id\": 1,\n  \"symptoms\": \"Fever, headache, body ache\",\n  \"diagnosis\": \"Viral fever\",\n  \"treatment\": \"Rest, paracetamol, plenty of fluids\",\n  \"encounter_type\": \"consultation\",\n  \"notes\": \"Patient advised to return if symptoms worsen\",\n  \"location_lat\": 9.9312,\n  \"location_lng\": 76.2673\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/encounter/add",
+					"host": ["{{base_url}}"],
+					"path": ["encounter", "add"]
+				}
+			}
+		},
+		{
+			"name": "Get Encounter by ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/encounter/1",
+					"host": ["{{base_url}}"],
+					"path": ["encounter", "1"]
+				}
+			}
+		},
+		{
+			"name": "Update Encounter",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"symptoms\": \"Fever, headache, body ache - improved\",\n  \"diagnosis\": \"Viral fever - recovering\",\n  \"treatment\": \"Continue rest, paracetamol as needed\",\n  \"encounter_type\": \"follow-up\",\n  \"notes\": \"Patient showing improvement, advised to complete rest\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/encounter/1",
+					"host": ["{{base_url}}"],
+					"path": ["encounter", "1"]
+				}
+			}
+		},
+		{
+			"name": "Create Consent",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"migrant_id\": 1,\n  \"consent_text\": \"I consent to the collection and processing of my health data for medical treatment and research purposes.\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/consent/",
+					"host": ["{{base_url}}"],
+					"path": ["consent", ""]
+				}
+			}
+		},
+		{
+			"name": "Check Consent",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/consent/check/1",
+					"host": ["{{base_url}}"],
+					"path": ["consent", "check", "1"]
+				}
+			}
+		},
+		{
+			"name": "Create ABHA ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"dob\": \"1990-01-01\",\n  \"gender\": \"Male\",\n  \"mobile\": \"+91-9876543210\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/integration/abha/create",
+					"host": ["{{base_url}}"],
+					"path": ["integration", "abha", "create"]
+				}
+			}
+		},
+		{
+			"name": "Verify Aadhaar",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"aadhaar_number\": \"123456789012\",\n  \"name\": \"John Doe\",\n  \"dob\": \"1990-01-01\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/integration/aadhaar/verify",
+					"host": ["{{base_url}}"],
+					"path": ["integration", "aadhaar", "verify"]
+				}
+			}
+		},
+		{
+			"name": "Upload Report",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "migrant_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "report_type",
+							"value": "blood_test",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/integration/upload-report",
+					"host": ["{{base_url}}"],
+					"path": ["integration", "upload-report"]
+				}
+			}
+		},
+		{
+			"name": "Analytics - Heatmap",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/analytics/heatmap",
+					"host": ["{{base_url}}"],
+					"path": ["analytics", "heatmap"]
+				}
+			}
+		},
+		{
+			"name": "Analytics - Stats",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/analytics/stats",
+					"host": ["{{base_url}}"],
+					"path": ["analytics", "stats"]
+				}
+			}
+		}
+	]
+}

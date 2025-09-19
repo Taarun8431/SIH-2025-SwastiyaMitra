@@ -1,0 +1,173 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Thiruvananthapuram",
+        "state": "Kerala",
+        "population": 3301427
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.9366, 8.5241]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kollam",
+        "state": "Kerala",
+        "population": 2635375
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.6141, 8.8932]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pathanamthitta",
+        "state": "Kerala",
+        "population": 1197412
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.7870, 9.2648]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Alappuzha",
+        "state": "Kerala",
+        "population": 2127789
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.3388, 9.4981]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kottayam",
+        "state": "Kerala",
+        "population": 1974551
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.5222, 9.5916]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Idukki",
+        "state": "Kerala",
+        "population": 1108974
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.9447, 9.8513]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ernakulam",
+        "state": "Kerala",
+        "population": 3282388
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.2673, 9.9312]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Thrissur",
+        "state": "Kerala",
+        "population": 3121200
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.2144, 10.5276]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Palakkad",
+        "state": "Kerala",
+        "population": 2809934
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.6548, 10.7867]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Malappuram",
+        "state": "Kerala",
+        "population": 4112920
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.0711, 11.0510]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kozhikode",
+        "state": "Kerala",
+        "population": 3086293
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [75.7804, 11.2588]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wayanad",
+        "state": "Kerala",
+        "population": 817420
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.1320, 11.6854]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kannur",
+        "state": "Kerala",
+        "population": 2523003
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [75.3704, 11.8745]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kasaragod",
+        "state": "Kerala",
+        "population": 1307375
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [74.9869, 12.4996]
+      }
+    }
+  ]
+}

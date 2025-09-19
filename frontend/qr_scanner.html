@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIH QR Scanner - Medical Records</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .scanner-section {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .scanner-input {
+            margin-bottom: 30px;
+        }
+        
+        .scanner-input input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .scanner-input input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .patient-info {
+            background: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .patient-header {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4facfe;
+        }
+        
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .patient-details h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .patient-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .meta-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .meta-value {
+            color: #6c757d;
+            font-size: 1.1em;
+        }
+        
+        .medical-history {
+            margin-top: 30px;
+        }
+        
+        .medical-history h3 {
+            color: #28a745;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 10px;
+        }
+        
+        .encounter-card {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .encounter-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .encounter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .encounter-type {
+            background: #28a745;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .encounter-date {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .encounter-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .detail-group {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .detail-value {
+            color: #6c757d;
+            line-height: 1.4;
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .no-records {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .patient-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .encounter-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 SIH QR Scanner</h1>
+            <p>Scan QR codes to view complete medical records</p>
+            <div style="margin-top: 15px;">
+                <a href="index.html" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+                    🏥 Back to Main
+                </a>
+            </div>
+        </div>
+        
+        <div class="scanner-section">
+            <h2>Scan or Enter QR Data</h2>
+            <div class="scanner-input">
+                <input type="text" id="qrInput" placeholder="Paste QR code data or migrant ID here..." />
+            </div>
+            <button class="btn" onclick="scanQRCode()">🔍 Scan QR Code</button>
+            <button class="btn" onclick="loginFirst()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">🔐 Login First</button>
+        </div>
+        
+        <div class="status-message" id="statusMessage"></div>
+        
+        <div class="patient-info" id="patientInfo">
+            <div class="patient-header">
+                <div class="patient-avatar" id="patientAvatar">👤</div>
+                <div class="patient-details">
+                    <h2 id="patientName">Patient Name</h2>
+                    <p id="patientId">ID: #12345</p>
+                </div>
+                <div class="patient-stats">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2em; font-weight: bold; color: #28a745;" id="totalVisits">0</div>
+                        <div style="color: #6c757d;">Total Visits</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="patient-meta" id="patientMeta">
+                <!-- Patient metadata will be populated here -->
+            </div>
+            
+            <div class="medical-history">
+                <h3>📋 Medical History</h3>
+                <div id="medicalRecords">
+                    <!-- Medical records will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+        let authToken = null;
+
+        function showStatus(message, isSuccess = true) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = `status-message ${isSuccess ? 'status-success' : 'status-error'}`;
+            statusElement.style.display = 'block';
+            
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+
+        async function loginFirst() {
+            const username = prompt('Enter username:', 'admin');
+            const password = prompt('Enter password:', 'admin123');
+            
+            if (!username || !password) return;
+            
+            try {
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+                
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    authToken = data.access_token;
+                    showStatus('✅ Login successful! You can now scan QR codes.');
+                } else {
+                    showStatus('❌ Login failed. Please check credentials.', false);
+                }
+            } catch (error) {
+                showStatus('❌ Connection error. Make sure the backend is running.', false);
+            }
+        }
+
+        async function scanQRCode() {
+            const qrInput = document.getElementById('qrInput').value.trim();
+            
+            if (!qrInput) {
+                showStatus('❌ Please enter QR code data or migrant ID', false);
+                return;
+            }
+            
+            showStatus('🔍 Reading QR code data...');
+            
+            try {
+                // Check if QR contains embedded patient details
+                if (qrInput.includes('PATIENT DETAILS:')) {
+                    displayEmbeddedPatientInfo(qrInput);
+                    showStatus('✅ Patient details loaded from QR code!');
+                    return;
+                }
+                
+                // Fallback: If it's just an ID, try to fetch from database
+                if (!authToken) {
+                    showStatus('❌ Please login first for database access', false);
+                    return;
+                }
+                
+                let migrantId = extractMigrantIdFromQR(qrInput);
+                
+                if (!migrantId) {
+                    showStatus('❌ Invalid QR code format', false);
+                    return;
+                }
+                
+                // Fetch complete migrant data dynamically from database
+                const response = await fetch(`${API_BASE_URL}/migrant/${migrantId}/complete`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    credentials: 'include',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayPatientInfo(data);
+                    showStatus('✅ Medical records loaded from database!');
+                } else if (response.status === 404) {
+                    showStatus('❌ Migrant not found in database', false);
+                } else {
+                    showStatus('❌ Failed to load medical records from database', false);
+                }
+                
+            } catch (error) {
+                showStatus('❌ Error reading QR code: ' + error.message, false);
+            }
+        }
+
+        function extractMigrantIdFromQR(qrData) {
+            try {
+                // Handle URL format: http://localhost:8000/migrant/123/complete
+                if (qrData.includes('/migrant/') && qrData.includes('/complete')) {
+                    const match = qrData.match(/\/migrant\/(\d+)\/complete/);
+                    if (match) return parseInt(match[1]);
+                }
+                
+                // Handle direct ID format: just numbers
+                if (/^\d+$/.test(qrData)) {
+                    return parseInt(qrData);
+                }
+                
+                // Handle legacy format: MIGRANT_ID:123|NAME:...
+                if (qrData.includes('MIGRANT_ID:')) {
+                    const match = qrData.match(/MIGRANT_ID:(\d+)/);
+                    if (match) return parseInt(match[1]);
+                }
+                
+                // Handle SIH format: SIH_MIGRANT_ID:123
+                if (qrData.includes('SIH_MIGRANT')) {
+                    const match = qrData.match(/ID:(\d+)/);
+                    if (match) return parseInt(match[1]);
+                }
+                
+                return null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function displayEmbeddedPatientInfo(qrText) {
+            // Parse the embedded patient details from QR text
+            const lines = qrText.split('\n');
+            const patientData = {};
+            
+            lines.forEach(line => {
+                if (line.includes(':')) {
+                    const [key, value] = line.split(':').map(s => s.trim());
+                    patientData[key] = value;
+                }
+            });
+            
+            // Update patient header
+            const fullName = patientData['Full Name'] || 'Unknown Patient';
+            const patientId = patientData['Patient ID'] || 'N/A';
+            
+            document.getElementById('patientName').textContent = fullName;
+            document.getElementById('patientId').textContent = `ID: #${patientId}`;
+            document.getElementById('patientAvatar').textContent = fullName.charAt(0).toUpperCase();
+            
+            // Count medical history entries
+            const medicalHistoryMatch = qrText.match(/MEDICAL HISTORY \((\d+) encounters\)/);
+            const totalVisits = medicalHistoryMatch ? medicalHistoryMatch[1] : '0';
+            document.getElementById('totalVisits').textContent = totalVisits;
+            
+            // Update patient metadata with embedded details
+            const metaContainer = document.getElementById('patientMeta');
+            metaContainer.innerHTML = `
+                <div class="meta-item">
+                    <div class="meta-label">Full Name</div>
+                    <div class="meta-value">${patientData['Full Name'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Date of Birth</div>
+                    <div class="meta-value">${patientData['Date of Birth'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Age</div>
+                    <div class="meta-value">${patientData['Age'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Gender</div>
+                    <div class="meta-value">${patientData['Gender'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Contact Number</div>
+                    <div class="meta-value">${patientData['Contact Number'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Phone</div>
+                    <div class="meta-value">${patientData['Phone'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Language</div>
+                    <div class="meta-value">${patientData['Language'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">District</div>
+                    <div class="meta-value">${patientData['District'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">District in Kerala</div>
+                    <div class="meta-value">${patientData['District in Kerala'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Occupation</div>
+                    <div class="meta-value">${patientData['Occupation'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">ABHA ID</div>
+                    <div class="meta-value">${patientData['ABHA ID'] || 'Not Registered'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Location</div>
+                    <div class="meta-value">${patientData['Location'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Registration Date</div>
+                    <div class="meta-value">${patientData['Registration Date'] || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Registration Time</div>
+                    <div class="meta-value">${patientData['Registration Time'] || 'N/A'}</div>
+                </div>
+            `;
+            
+            // Display medical history from QR text
+            const recordsContainer = document.getElementById('medicalRecords');
+            const medicalHistoryStart = qrText.indexOf('MEDICAL HISTORY');
+            
+            if (medicalHistoryStart !== -1) {
+                const medicalSection = qrText.substring(medicalHistoryStart);
+                const historyLines = medicalSection.split('\n').slice(1); // Skip header
+                
+                if (historyLines.length > 0 && historyLines[0].trim()) {
+                    let html = '';
+                    historyLines.forEach(line => {
+                        if (line.trim() && line.match(/^\d+\./)) {
+                            const parts = line.split('|');
+                            const visitInfo = parts[0].trim();
+                            const diagnosis = parts[1] ? parts[1].replace('Diagnosis:', '').trim() : 'N/A';
+                            
+                            html += `
+                                <div class="encounter-card">
+                                    <div class="encounter-header">
+                                        <span class="encounter-type">Medical Visit</span>
+                                        <span class="encounter-date">${visitInfo}</span>
+                                    </div>
+                                    <div class="encounter-details">
+                                        <div class="detail-group">
+                                            <div class="detail-label">Diagnosis</div>
+                                            <div class="detail-value">${diagnosis}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                    recordsContainer.innerHTML = html || '<div class="no-records">No detailed medical records in QR code</div>';
+                } else {
+                    recordsContainer.innerHTML = '<div class="no-records">No medical records found in QR code</div>';
+                }
+            } else {
+                recordsContainer.innerHTML = '<div class="no-records">No medical history included in QR code</div>';
+            }
+            
+            // Show patient info section
+            document.getElementById('patientInfo').style.display = 'block';
+            document.getElementById('patientInfo').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayPatientInfo(data) {
+            const migrant = data.migrant;
+            const encounters = data.encounters;
+            
+            // Update patient header
+            document.getElementById('patientName').textContent = migrant.name;
+            document.getElementById('patientId').textContent = `ID: #${migrant.id}`;
+            document.getElementById('totalVisits').textContent = encounters.length;
+            document.getElementById('patientAvatar').textContent = migrant.name.charAt(0).toUpperCase();
+            
+            // Update patient metadata with ALL registration details
+            const metaContainer = document.getElementById('patientMeta');
+            metaContainer.innerHTML = `
+                <div class="meta-item">
+                    <div class="meta-label">Full Name</div>
+                    <div class="meta-value">${migrant.name || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Date of Birth</div>
+                    <div class="meta-value">${migrant.dob ? new Date(migrant.dob).toLocaleDateString() : 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Age</div>
+                    <div class="meta-value">${migrant.age || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Gender</div>
+                    <div class="meta-value">${migrant.gender || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Contact Number</div>
+                    <div class="meta-value">${migrant.contact || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Phone</div>
+                    <div class="meta-value">${migrant.phone || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Language</div>
+                    <div class="meta-value">${migrant.language || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">District</div>
+                    <div class="meta-value">${migrant.district || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">District in Kerala</div>
+                    <div class="meta-value">${migrant.district_in_kerala || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Occupation</div>
+                    <div class="meta-value">${migrant.occupation || 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">ABHA ID</div>
+                    <div class="meta-value">${migrant.abha_id || 'Not Registered'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Location</div>
+                    <div class="meta-value">${migrant.location_lat && migrant.location_lng ? `${migrant.location_lat}, ${migrant.location_lng}` : 'N/A'}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Registration Date</div>
+                    <div class="meta-value">${new Date(migrant.created_at).toLocaleDateString()}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Registration Time</div>
+                    <div class="meta-value">${new Date(migrant.created_at).toLocaleTimeString()}</div>
+                </div>
+            `;
+            
+            // Update medical records
+            const recordsContainer = document.getElementById('medicalRecords');
+            
+            if (!encounters || encounters.length === 0) {
+                recordsContainer.innerHTML = '<div class="no-records">No medical records found</div>';
+            } else {
+                let html = '';
+                encounters.forEach(encounter => {
+                    const date = encounter.occurred_at ? 
+                        new Date(encounter.occurred_at).toLocaleDateString() : 
+                        new Date(encounter.created_at).toLocaleDateString();
+                    
+                    html += `
+                        <div class="encounter-card">
+                            <div class="encounter-header">
+                                <span class="encounter-type">${encounter.encounter_type}</span>
+                                <span class="encounter-date">${date}</span>
+                            </div>
+                            <div class="encounter-details">
+                                <div class="detail-group">
+                                    <div class="detail-label">Symptoms</div>
+                                    <div class="detail-value">${encounter.symptoms || 'N/A'}</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Diagnosis</div>
+                                    <div class="detail-value">${encounter.diagnosis || 'N/A'}</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Treatment</div>
+                                    <div class="detail-value">${encounter.treatment || 'N/A'}</div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="detail-label">Doctor</div>
+                                    <div class="detail-value">${encounter.doctor || 'N/A'}</div>
+                                </div>
+                            </div>
+                            ${encounter.notes ? `<div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 5px;"><strong>Notes:</strong> ${encounter.notes}</div>` : ''}
+                        </div>
+                    `;
+                });
+                recordsContainer.innerHTML = html;
+            }
+            
+            // Show patient info section
+            document.getElementById('patientInfo').style.display = 'block';
+            document.getElementById('patientInfo').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Allow Enter key to scan
+        document.getElementById('qrInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                scanQRCode();
+            }
+        });
+    </script>
+</body>
+</html>

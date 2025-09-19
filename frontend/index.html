@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIH Migrant Health System - Data Upload</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .form-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .data-display {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .data-display h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .data-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .qr-display {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .qr-display h3 {
+            margin-bottom: 25px;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.8em;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .qr-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: start;
+        }
+        
+        .qr-image-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .qr-image-section img {
+            max-width: 200px;
+            border: 3px solid #4facfe;
+            border-radius: 15px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .qr-info {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .qr-info h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 8px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .info-value {
+            color: #6c757d;
+            text-align: right;
+        }
+        
+        .medical-records {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .medical-records h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 8px;
+        }
+        
+        .encounter-card {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .encounter-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .encounter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .encounter-type {
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .encounter-date {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .encounter-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .detail-group {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .qr-actions {
+            grid-column: 1 / -1;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .qr-actions .btn {
+            min-width: 150px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+        
+        .btn-print {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .btn-scan {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+        
+        .no-records {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .qr-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .encounter-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .qr-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 SIH Migrant Health System</h1>
+            <p>Upload and manage migrant health data</p>
+        </div>
+        
+        <div class="content">
+            <!-- Login Section -->
+            <div class="form-section" id="loginSection">
+                <h2>🔐 Login</h2>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" value="admin123" required>
+                </div>
+                <button class="btn" onclick="login()">Login</button>
+                <div class="status" id="loginStatus"></div>
+            </div>
+            
+            <!-- Migrant Registration Section -->
+            <div class="form-section" id="migrantSection" style="display: none;">
+                <h2>👤 Register New Migrant</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="migrantName">Full Name:</label>
+                        <input type="text" id="migrantName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="migrantGender">Gender:</label>
+                        <select id="migrantGender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="migrantContact">Contact Number:</label>
+                        <input type="tel" id="migrantContact" placeholder="+91-9876543210">
+                    </div>
+                    <div class="form-group">
+                        <label for="migrantDistrict">District in Kerala:</label>
+                        <select id="migrantDistrict">
+                            <option value="">Select District</option>
+                            <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                            <option value="Kollam">Kollam</option>
+                            <option value="Pathanamthitta">Pathanamthitta</option>
+                            <option value="Alappuzha">Alappuzha</option>
+                            <option value="Kottayam">Kottayam</option>
+                            <option value="Idukki">Idukki</option>
+                            <option value="Ernakulam">Ernakulam</option>
+                            <option value="Thrissur">Thrissur</option>
+                            <option value="Palakkad">Palakkad</option>
+                            <option value="Malappuram">Malappuram</option>
+                            <option value="Kozhikode">Kozhikode</option>
+                            <option value="Wayanad">Wayanad</option>
+                            <option value="Kannur">Kannur</option>
+                            <option value="Kasaragod">Kasaragod</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="migrantOccupation">Occupation:</label>
+                        <input type="text" id="migrantOccupation" placeholder="e.g., Construction Worker">
+                    </div>
+                    <div class="form-group">
+                        <label for="migrantAge">Age:</label>
+                        <input type="number" id="migrantAge" min="1" max="120">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="migrantLat">Latitude:</label>
+                        <input type="number" id="migrantLat" step="any" placeholder="9.9312">
+                    </div>
+                    <div class="form-group">
+                        <label for="migrantLng">Longitude:</label>
+                        <input type="number" id="migrantLng" step="any" placeholder="76.2673">
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="registerMigrant()">Register Migrant</button>
+                <div class="status" id="migrantStatus"></div>
+                
+                <!-- QR Code Display Section -->
+                <div class="qr-display" id="qrDisplay" style="display: none;">
+                    <h3>🔲 Your Unique QR Code</h3>
+                    <div class="qr-container">
+                        <div class="qr-image-section">
+                            <img id="qrImage" src="" alt="Migrant QR Code" style="max-width: 200px; border: 3px solid #4facfe; border-radius: 15px; padding: 15px; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        </div>
+                        <div class="qr-info">
+                            <h4>Migrant Information</h4>
+                            <div class="info-item">
+                                <span class="info-label">Migrant ID:</span>
+                                <span class="info-value" id="qrMigrantId"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Name:</span>
+                                <span class="info-value" id="qrMigrantName"></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">QR Data:</span>
+                                <span class="info-value" id="qrData"></span>
+                            </div>
+                        </div>
+                        <div class="medical-records">
+                            <h4>Medical Records</h4>
+                            <div id="medicalRecords"></div>
+                        </div>
+                        <div class="qr-actions">
+                            <button class="btn btn-download" onclick="downloadQR()">Download QR Code</button>
+                            <button class="btn btn-print" onclick="printQR()">Print QR Code</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Medical Encounter Section -->
+            <div class="form-section" id="encounterSection" style="display: none;">
+                <h2>🏥 Add Medical Encounter</h2>
+                <div class="form-group">
+                    <label for="encounterMigrant">Select Migrant:</label>
+                    <select id="encounterMigrant" required>
+                        <option value="">Select a migrant first</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="encounterSymptoms">Symptoms:</label>
+                    <textarea id="encounterSymptoms" rows="3" placeholder="Describe the symptoms..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="encounterDiagnosis">Diagnosis:</label>
+                    <textarea id="encounterDiagnosis" rows="2" placeholder="Medical diagnosis..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="encounterTreatment">Treatment:</label>
+                    <textarea id="encounterTreatment" rows="3" placeholder="Prescribed treatment..."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="encounterType">Encounter Type:</label>
+                        <select id="encounterType">
+                            <option value="consultation">Consultation</option>
+                            <option value="follow-up">Follow-up</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="screening">Screening</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="encounterNotes">Additional Notes:</label>
+                        <input type="text" id="encounterNotes" placeholder="Any additional notes...">
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="addEncounter()">Add Encounter</button>
+                <div class="status" id="encounterStatus"></div>
+            </div>
+            
+            <!-- Data Display Section -->
+            <div class="data-display" id="dataDisplay" style="display: none;">
+                <h3>📊 Recent Data</h3>
+                <div id="recentData"></div>
+                <button class="btn" onclick="refreshData()">Refresh Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

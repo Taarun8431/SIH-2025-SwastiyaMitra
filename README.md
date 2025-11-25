@@ -1,4 +1,8 @@
-# SIH Backend - Migrant Health System
+# SIH-2025-SwastiyaMitra
+
+A digital health record system for Kerala’s migrant population, ensuring secure medical history, multilingual access, AI-powered preventive healthcare chatbot, role-based provider access, and analytics for disease surveillance. Fully containerized with Docker for fast, scalable deployment.
+
+## Backend Overview
 
 Integrated FastAPI backend for migrant health management with PostGIS support, combining features from three separate backend implementations.
 
@@ -31,7 +35,7 @@ sih_backend/
 │       ├── encounter_routes.py # Medical encounters
 │       ├── consent_routes.py   # Consent management
 │       ├── integration_routes.py # ABHA/Aadhaar/uploads
-│       └── analytics_routes.py # Heatmap & statistics
+│       ├── analytics_routes.py # Heatmap & statistics
 ├── alembic/                    # Database migrations
 ├── scripts/
 │   └── seed_data.py            # Database seeding script
